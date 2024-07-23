@@ -1,4 +1,0 @@
-If you want to use private repository as package source, there are 3 ways to do it:
-- Pypi
-- git submodules
-- poetry git submodules
