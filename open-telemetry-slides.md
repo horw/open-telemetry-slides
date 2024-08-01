@@ -11,13 +11,23 @@ mdc: true
 <div class='absolute bottom-2 right-3'>
 presented by Igor Udot
 </div>
+
+---
+
+Monitoring vs observability
+
+Monitoring works outside
+Observability inside
+
+Monitoring typically answers the question "Is the system working as expected?" It involves tracking predefined metrics and thresholds to ensure that systems are functioning within acceptable parameters. Monitoring focuses on collecting data on system performance, availability, and other key indicators to detect issues or anomalies.
+
+On the other hand, observability addresses the question "Why is the system behaving this way?" Observability is about gaining insights into the internal state of a system based on the data it provides. It involves the ability to understand and infer the system's internal state based on its external outputs. Observability goes beyond monitoring by providing a more holistic view of system behavior and enabling better understanding of complex interactions within the system.
+
 ---
 layout: center
 class: text-center
 mdc: true
 ---
-
-
 
 # "Why is the system behaving this way?"
 
@@ -107,6 +117,10 @@ Without tracing, finding the root cause of performance problems in a distributed
 <img class="w-150 absolute right-50" src='https://opentelemetry.io/img/waterfall-trace.svg'>
 
 ---
+
+Tracing аналогия с дверьми и доставщиком пиццы.
+
+---
 layout: center
 ---
 
@@ -120,6 +134,15 @@ layout: center
   Logs: <span v-mark.yellow="1">provide</span> the detail which reveals the root cause of the problem
 
 ---
+
+Error metrics  = 3
+
+it shows traces 
+
+traces show logs
+
+---
+
 
 # OpenTelemery
 https://opentelemetry.io/docs/what-is-opentelemetry/
@@ -136,55 +159,67 @@ OpenTelemetry<span v-mark.circle.red="2"> is not an observability backend</span>
 <div v-click="[1,7]" class='absolute top-40 left-20'> We should instrument our app <br/> to make it possible to send OTLP.</div>
 
 <style>
-.slidev-vclick-target {
-  transition: opacity 1500ms ease;
-}
 .bg {
-  transition: opacity 500ms ease, visibility 500ms ease;
+  transition: opacity 1200ms ease;
   background-color: white;
 }
 </style>
-<div v-click="[2,6]" class='absolute top-40 w-220 h-200 bg'>
-
+<div v-click="[2,7]" class='absolute top-40 w-220 h-200 bg'>
+<div class="bg">
 
 ````md magic-move {at:3, lines: true}
 
 ```python
 # tracing
-resource = Resource.create(attributes={
+resource = Resource.create(attributes={ #            <-- Labels for recognizing service.
     "service.name": app_name,
 })
 
-tracer = TracerProvider(resource=resource)
-tracer.add_span_processor(BatchSpanProcessor(
-    OTLPSpanExporter(endpoint=endpoint))
-)
+exporter = OTLPSpanExporter(endpoint=endpoint) #                                  <-- Exporter
+processor = BatchSpanProcessor(exporter) #                                        <-- Processor
 
-trace.set_tracer_provider(tracer)
+provider = TracerProvider(active_span_processor=processor, resource=resource) #   <-- Provider
+set_tracer_provider(provider)
 ```
 ```python
 # metrics
-resource = Resource.create(attributes={
+resource = Resource.create(attributes={ #            <-- Labels for recognizing service.
     "service.name": app_name,
 })
-exporter = OTLPMetricExporter(insecure=True)
-reader = PeriodicExportingMetricReader(exporter, math.inf)
+exporter = OTLPMetricExporter(insecure=True) #                                    <-- Exporter
+reader = PeriodicExportingMetricReader(exporter, math.inf) #                      <-- Processor
 
-provider = MeterProvider(metric_readers=[reader], resource=resource)
+provider = MeterProvider(metric_readers=[reader], resource=resource) #            <-- Provider
 set_meter_provider(provider)
 ```
 ```python
-# logs
+# logs 
+resource = Resource.create(attributes={ #            <-- Labels for recognizing service.
+    "service.name": app_name,
+})
+
+exporter = OTLPLogExporter(insecure=True) #                                          <-- Exporter
+processor = BatchLogRecordProcessor(exporter) #                                      <-- Processor
+
+provider = LoggerProvider(multi_log_record_processor=processor, resource=resource) # <-- Provider
+set_logger_provider(provider)
+
+handler = LoggingHandler(level=logging.NOTSET, logger_provider=provider)
+# Attach OTLP handler to root logger
+logging.getLogger().addHandler(handler)
+```
+```python
+# BUT you can also add a custom logs processor to your code.
 def add_open_telemetry_spans(_, __, event_dict) -> dict:
-    span = trace.get_current_span()
+    span = trace.get_current_span() # <-- get span(context) object 
     if not span.is_recording():
         event_dict["span"] = None
         return event_dict
 
-    ctx = span.get_span_context()
+    ctx = span.get_span_context() #   <-- get span(context) attribute
     parent = getattr(span, "parent", None)
 
-    event_dict["span"] = {
+    event_dict["span"] = { #          <-- set this context to the logger 
         "span_id": hex(ctx.span_id),
         "trace_id": hex(ctx.trace_id),
         "parent_span_id": None if not parent else hex(parent.span_id),
@@ -200,24 +235,24 @@ HTTPXClientInstrumentor().instrument()
 FastAPIInstrumentor.instrument_app(app, tracer_provider=tracer)
 ```
 ````
-<style>
-.slidev-vclick-target {
-  transition: opacity 100ms ease;
-}
-</style>
+
+</div>
 </div>
 
 
 
-<arrow v-click="[7]" x1="290" y1="220" x2="290" y2="270" color="#953" width="2" arrowSize="3" />
-<arrow v-click="[7]" x1="530" y1="220" x2="530" y2="270" color="#953" width="2" arrowSize="3" />
+<arrow v-click="[8,10]" x1="290" y1="220" x2="290" y2="270" color="#76a0ef" width="2" arrowSize="3" />
+<arrow v-click="[8,10]" x1="530" y1="220" x2="530" y2="270" color="#76a0ef" width="2" arrowSize="3" />
 
-<div v-click="[7]" class='absolute top-45 left-45'> Exporters help us transfer data to data consumers / receivers. </div>
+<div v-click="[8,10]" class='absolute top-45 left-55'> <span v-mark="{ at: 8, color: '#76a0ef', type: 'circle' }">Exporters</span> help us transfer data to data <span v-mark="{ at: 9, color: '#70db70', type: 'circle' }">consumers / receivers.</span> </div>
 
-<div v-click="9" class='absolute top-45 left-45'> And ideally, it's supposed to use the OTLP protocol for communication. </div>
+<arrow v-click="[9]" x1="420" y1="220" x2="420" y2="270" color="#70db70" width="2" arrowSize="3" />
+<arrow v-click="[9]" x1="700" y1="220" x2="700" y2="270" color="#70db70" width="2" arrowSize="3" />
 
-<arrow v-click="9" x1="350" y1="220" x2="350" y2="270" color="#953" width="2" arrowSize="3" />
-<arrow v-click="9" x1="610" y1="220" x2="610" y2="270" color="#953" width="2" arrowSize="3" />
+<div v-click="10" class='absolute top-45 left-45'> And ideally, it's supposed to use the OTLP protocol for communication. </div>
+
+<arrow v-click="10" x1="350" y1="220" x2="350" y2="270" color="#953" width="2" arrowSize="3" />
+<arrow v-click="10" x1="610" y1="220" x2="610" y2="270" color="#953" width="2" arrowSize="3" />
 
 ---
 
@@ -244,12 +279,7 @@ The OpenTelemetry Protocol (OTLP) specification describes the encoding, transpor
 
 # System Example
 <!-- <img src='https://grafana.com/media/blog/lambda-traces/Lambda-traces-2.png'> -->
-
-<div class="pt-12">
-  <span @click="$slidev.nav.go(1)" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    Press Space for next page <carbon:arrow-right class="inline"/>
-  </span>
-</div>
+<src src="https://miro.medium.com/v2/resize:fit:1400/1*Re85YC9ZNUCniuZEdAsH3A.png" />
 
 
 ---
