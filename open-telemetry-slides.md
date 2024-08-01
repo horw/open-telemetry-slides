@@ -6,7 +6,7 @@ drawings:
 transition: slide-left
 mdc: true
 ---
-# Services Observability
+# Observability
 
 <div class='absolute bottom-2 right-3'>
 presented by Igor Udot
@@ -14,14 +14,20 @@ presented by Igor Udot
 
 ---
 
-Monitoring vs observability
+# Monitoring vs Observability
 
-Monitoring works outside
-Observability inside
+<img src="./imgs/open-telemetry-slides/blackwhitebox.png" class="absolute w-130 top-55 left-50"/>
 
-Monitoring typically answers the question "Is the system working as expected?" It involves tracking predefined metrics and thresholds to ensure that systems are functioning within acceptable parameters. Monitoring focuses on collecting data on system performance, availability, and other key indicators to detect issues or anomalies.
+---
+layout: center
+class: text-center
+mdc: true
+---
 
-On the other hand, observability addresses the question "Why is the system behaving this way?" Observability is about gaining insights into the internal state of a system based on the data it provides. It involves the ability to understand and infer the system's internal state based on its external outputs. Observability goes beyond monitoring by providing a more holistic view of system behavior and enabling better understanding of complex interactions within the system.
+# "Is the system working as expected?"
+
+What is monitoring
+
 
 ---
 layout: center
@@ -53,20 +59,18 @@ either have, or you don’t.
 
 
 ---
-layout: center 
----
 
 # The Three Pillars of Observability
 
 <div>
 
-Metrics - Logs - Tracing
+Metrics - Traces - Logs
 
 </div>
+
 <img 
-  v-click
-  class="w-150 "
-  src='https://www.atatus.com/blog/content/images/size/w1000/2023/02/observability.png'
+  class="absolute w-100 left-70"
+  src='./imgs/open-telemetry-slides/pillars.png'
 />
 
 ---
@@ -89,10 +93,23 @@ Metrics are a numerical representation of data.
   <img
   src='https://last9.ghost.io/content/images/size/w1000/2023/05/image-28.png'>
 </div>
+
+---
+
+# Traces
+Traces are records of the paths taken by requests.
+
+<div v-click='[1]' class="text-center absolute left-25 top-60">
+Without tracing, finding the root cause of problems in a distributed system can be challenging.
+</div>
+<img v-click='[2]' class="w-150 absolute right-50" src='./imgs/open-telemetry-slides/waterfall-trace.svg'>
+
+<img v-click=3 class="w-230 absolute right-5 top-50" src='./imgs/open-telemetry-slides/day-routine.png'>
+
 ---
 
 # Logs
-Log files are the historical records of your systems. 
+Logs are the historical records of your systems. 
 
 
 ````md magic-move {lines: true}
@@ -107,18 +124,6 @@ A simple print statement such as `Hello, I reached here` can help in debugging a
 ```
 ````
 
----
-
-# Traces
-Records the paths taken by requests.
-
-Without tracing, finding the root cause of performance problems in a distributed system can be challenging.
-
-<img class="w-150 absolute right-50" src='https://opentelemetry.io/img/waterfall-trace.svg'>
-
----
-
-Tracing аналогия с дверьми и доставщиком пиццы.
 
 ---
 layout: center
@@ -133,6 +138,7 @@ layout: center
   
   Logs: <span v-mark.yellow="1">provide</span> the detail which reveals the root cause of the problem
 
+  <div v-click="2">And they <span v-mark.yellow.circle="3">are correlated together</span>.</div>
 ---
 
 Error metrics  = 3
