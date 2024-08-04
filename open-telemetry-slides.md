@@ -6,7 +6,7 @@ drawings:
 transition: slide-left
 mdc: true
 ---
-# Observability
+# System Observability
 
 <div class='absolute bottom-2 right-3'>
 presented by Igor Udot
@@ -16,7 +16,7 @@ presented by Igor Udot
 
 # Monitoring vs Observability
 
-<img src="./imgs/open-telemetry-slides/blackwhitebox.png" class="absolute w-130 top-55 left-50"/>
+<img src="./imgs/open-telemetry-slides/blackwhitebox.png" class="absolute w-130 top-55 left-60"/>
 
 ---
 layout: center
@@ -138,14 +138,83 @@ layout: center
   
   Logs: <span v-mark.yellow="1">provide</span> the detail which reveals the root cause of the problem
 
-  <div v-click="2">And they <span v-mark.yellow.circle="3">are correlated together</span>.</div>
+  <div v-click="2">And they <span v-mark.yellow.circle="3">are correlated together</span>.
+
+  </div>
+  
+---
+layout: center
+class: text-center
+---
+There should be <span v-mark.yellow=0>some ID</span> to help us correlate metrics, traces, and logs.
+
+<div v-click=1> 
+
+# It is a trace ID.
+</div>
+
+---
+class: text-center
 ---
 
-Error metrics  = 3
+<img v-click=[1,2] class="w-40 absolute top-50 left-40" src='./imgs/open-telemetry-slides/ex1/metric_before.png' >
 
-it shows traces 
+<div v-click=[0] class="absolute top-50 left-60 text-center">
 
-traces show logs
+# We got some exception. 
+Our alert system indicates that the exception count is equal to 1.
+</div>
+
+<img v-click=[2,4] class="w-100 absolute right-5 top-10 left-70" src='./imgs/open-telemetry-slides/ex1/ex1_metrics.png'>
+
+<div v-click=[3] class="absolute top-94 left-34">
+<span v-mark.red.circle="3">  There is our trace ID--> </span>
+</div>
+
+
+<img v-click=4 class="w-40 absolute top-50 left-40" src='./imgs/open-telemetry-slides/ex1/metric.png' >
+
+<img v-click=5 class="w-30 absolute top-65 left-82" src='./imgs/open-telemetry-slides/ex1/arg.png' >
+
+<img v-click=5 class="w-38 absolute top-50 left-112" src='./imgs/open-telemetry-slides/ex1/trace_before.png' >
+
+
+<img v-click=[6] class="w-150 absolute right-5 top-10 left-40" src='./imgs/open-telemetry-slides/ex1/ex1_jaeger.png' >
+
+
+<img v-click=[7,9] class="w-230 absolute top-10 left-40" src='./imgs/open-telemetry-slides/ex1/ex1_jaeger_in_trace.png' >
+
+<div v-click=[8] class="absolute top-9 left-100">
+<span v-mark.red.circle="8">  <-- There is our trace ID </span>
+</div>
+
+
+<img v-click=10 class="w-38 absolute top-50 left-112" src='./imgs/open-telemetry-slides/ex1/trace.png' >
+<img v-click=11 class="w-30 absolute top-65 left-152" src='./imgs/open-telemetry-slides/ex1/arg.png' >
+<img v-click=11 class="w-38 absolute top-50 left-182" src='./imgs/open-telemetry-slides/ex1/log_before.png' >
+
+<img v-click=[12] class="w-110 absolute  left-65" src='./imgs/open-telemetry-slides/ex1/ex1_grafana.png' >
+<img v-click=[13] class="w-150 absolute  left-45" src='./imgs/open-telemetry-slides/ex1/ex1_logs.png' >
+<div v-click=[13] class="absolute bottom-15 right-2">
+<span v-mark.red.circle="13"><--  There is our trace ID </span>
+</div>
+
+<img v-click=14 class="w-38 absolute top-50 left-182" src='./imgs/open-telemetry-slides/ex1/log.png' >
+
+<img v-click=15 class="w-10 absolute top-37 left-55" src='./imgs/open-telemetry-slides/ex1/prom.png' >
+<img v-click=16 class="w-40 absolute top-35 left-112" src='./imgs/open-telemetry-slides/ex1/jaeger.png' >
+<img v-click=17 class="w-28 absolute top-35 left-188" src='./imgs/open-telemetry-slides/ex1/gl.png' >
+
+<img v-click=18 class="w-30 absolute top-70 left-82" src='./imgs/open-telemetry-slides/ex1/bk_arg.png' >
+<img v-click=18 class="w-30 absolute top-70 left-152" src='./imgs/open-telemetry-slides/ex1/bk_arg.png' >
+<img v-click=18 class="w-100 absolute top-83 left-82" src='./imgs/open-telemetry-slides/ex1/round_arg.png' >
+
+
+<img v-click=19 class="w-28 absolute top-55 left-152" src='./imgs/open-telemetry-slides/ex1/opentel.png' >
+<img v-click=19 class="w-28 absolute top-55 left-82" src='./imgs/open-telemetry-slides/ex1/opentel.png' >
+<img v-click=19 class="w-28 absolute top-85 left-120" src='./imgs/open-telemetry-slides/ex1/opentel.png' >
+
+
 
 ---
 
