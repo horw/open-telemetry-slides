@@ -24,7 +24,7 @@ class: text-center
 mdc: true
 ---
 
-# "Is the system working as expected?"
+# "<span v-mark.yellow.circle=1>Is</span> the system working as expected?"
 
 What is monitoring
 
@@ -35,7 +35,7 @@ class: text-center
 mdc: true
 ---
 
-# "Why is the system behaving this way?"
+# "<span v-mark.yellow.circle=1>Why</span> is the system behaving this way?"
 
 What is observability
 
@@ -111,24 +111,17 @@ Without tracing, finding the root cause of problems in a distributed system can 
 # Logs
 Logs are the historical records of your systems. 
 
-
-````md magic-move {lines: true}
 ```json
 {"level":"info","msg":"Something noteworthy happened!","time":"2019-12-09T16:18:21+01:00"}
 {"level":"warning","msg":"You should probably take a look at this.","time":"2019-12-09T16:18:21+01:00"}
 {"level":"error","msg":"Something failed but I'm not quitting.","time":"2019-12-09T16:18:21+01:00"}
 ```
 
-```md
-A simple print statement such as `Hello, I reached here` can help in debugging a lot at times...
-```
-````
-
-
 ---
 layout: center
 ---
 
+# User perspective
 
   <br/>
 
@@ -138,17 +131,14 @@ layout: center
   
   Logs: <span v-mark.yellow="1">provide</span> the detail which reveals the root cause of the problem
 
-  <div v-click="2">And they <span v-mark.yellow.circle="3">are correlated together</span>.
-
-  </div>
   
 ---
 layout: center
 class: text-center
 ---
-There should be <span v-mark.yellow=0>some ID</span> to help us correlate metrics, traces, and logs.
+There should be <span v-mark.yellow=1>some way</span> to help us correlate metrics, traces, and logs.
 
-<div v-click=1> 
+<div v-click=2> 
 
 # It is a trace ID.
 </div>
@@ -161,8 +151,8 @@ class: text-center
 
 <div v-click=[0] class="absolute top-50 left-60 text-center">
 
-# We got some exception. 
-Our alert system indicates that the exception count is equal to 1.
+# We got a problem!
+Our alert system indicates that the exception count is equal to `1`.
 </div>
 
 <img v-click=[2,4] class="w-100 absolute right-5 top-10 left-70" src='./imgs/open-telemetry-slides/ex1/ex1_metrics.png'>
@@ -227,11 +217,26 @@ OpenTelemetry is an Observability framework and toolkit designed to <span v-mark
 OpenTelemetry<span v-mark.circle.red="2"> is not an observability backend</span> like Jaeger, Prometheus, or other commercial vendors. OpenTelemetry is focused on the generation, collection, management, and export of telemetry. A major goal of OpenTelemetry is that you can easily instrument your applications or systems, no matter their language, infrastructure, or runtime environment. Crucially, the<span v-mark.circle.red="2"> storage and visualization </span>of telemetry is intentionally left to other tools.
 ---
 
-# Workflow example
-<img v-click="0" src='https://dt-cdn.net/images/otel-otlp-colector-9745904d35.svg' class='absolute top-60 left-20 w-200'>
+# Simple workflow
 
-<arrow v-click="[1,7]" x1="140" y1="220" x2="140" y2="270" color="#953" width="2" arrowSize="3" />
-<div v-click="[1,7]" class='absolute top-40 left-20'> We should instrument our app <br/> to make it possible to send OTLP.</div>
+<img v-click="0" src='./imgs/open-telemetry-slides/ex2/exporter.png' class='absolute top-50 left-60 w-50'>
+<img v-click="0" src='./imgs/open-telemetry-slides/ex2/receiver.png' class='absolute top-50 left-140 w-50'>
+<img v-click="2" src='./imgs/open-telemetry-slides/ex2/connection.png' class='absolute top-57 left-115 w-20'>
+
+<div v-click="[1,3]" class='absolute top-35 left-65'> <span v-mark="{ at: 1, color: '#1971c2', type: 'circle' }">Exporters</span> help us transfer data to a <span v-mark="{ at: 2, color: '#a0daa9', type: 'circle' }"> data consumers / receivers.</span> </div>
+<arrow v-click="[1,3]" x1="390" y1="170" x2="390" y2="220" color="#1971c2" width="2" arrowSize="3" />
+<arrow v-click="[2]" x1="610" y1="170" x2="610" y2="220" color="#a0daa9" width="2" arrowSize="3" />
+
+
+<div v-click="[3]" class='absolute top-35 left-40'> And ideally, it's supposed to use the OTLP(Opentelemetry protocol) for communication. </div>
+
+<arrow v-click="[3]" x1="490" y1="180" x2="490" y2="220" color="#1971c2" width="2" arrowSize="3" />
+
+
+<img v-click="4" src='./imgs/open-telemetry-slides/ex2/extended.png' class='absolute top-50 left-37 w-73'>
+<arrow v-click="[5]" x1="290" y1="170" x2="290" y2="200" color="#953" width="2" arrowSize="3" />
+<div v-click="[5]" class='absolute top-30 left-50'> We should instrument our system <br/> to make it possible to send OTLP.</div>
+
 
 <style>
 .bg {
@@ -239,10 +244,10 @@ OpenTelemetry<span v-mark.circle.red="2"> is not an observability backend</span>
   background-color: white;
 }
 </style>
-<div v-click="[2,7]" class='absolute top-40 w-220 h-200 bg'>
+<div v-click="[6,11]" class='absolute top-40 w-220 h-200 bg'>
 <div class="bg">
 
-````md magic-move {at:3, lines: true}
+````md magic-move {at:7, lines: true}
 
 ```python
 # tracing
@@ -315,47 +320,85 @@ FastAPIInstrumentor.instrument_app(app, tracer_provider=tracer)
 </div>
 
 
+---
 
-<arrow v-click="[8,10]" x1="290" y1="220" x2="290" y2="270" color="#76a0ef" width="2" arrowSize="3" />
-<arrow v-click="[8,10]" x1="530" y1="220" x2="530" y2="270" color="#76a0ef" width="2" arrowSize="3" />
-
-<div v-click="[8,10]" class='absolute top-45 left-55'> <span v-mark="{ at: 8, color: '#76a0ef', type: 'circle' }">Exporters</span> help us transfer data to data <span v-mark="{ at: 9, color: '#70db70', type: 'circle' }">consumers / receivers.</span> </div>
-
-<arrow v-click="[9]" x1="420" y1="220" x2="420" y2="270" color="#70db70" width="2" arrowSize="3" />
-<arrow v-click="[9]" x1="700" y1="220" x2="700" y2="270" color="#70db70" width="2" arrowSize="3" />
-
-<div v-click="10" class='absolute top-45 left-45'> And ideally, it's supposed to use the OTLP protocol for communication. </div>
-
-<arrow v-click="10" x1="350" y1="220" x2="350" y2="270" color="#953" width="2" arrowSize="3" />
-<arrow v-click="10" x1="610" y1="220" x2="610" y2="270" color="#953" width="2" arrowSize="3" />
+# Medium workflow
+<img v-click="[0]" src='./imgs/open-telemetry-slides/ex3/collector-without.png' class='absolute top-57 left-25 w-200'>
+<img v-click="[1,3]" src='./imgs/open-telemetry-slides/ex3/collector-with.png' class='absolute top-57 left-25 w-200'>
+<img v-click="[2]" src='./imgs/open-telemetry-slides/ex3/collector.png' class='absolute top-42 left-73 w-106'>
+<img v-click="3" src='./imgs/open-telemetry-slides/ex3/sidecar.png' class='absolute top-42 left-25 w-200'>
 
 ---
 
-# OpenTelemetry Protocol
-https://opentelemetry.io/docs/specs/otlp/<br/>
+# Complex workflow
 
-The OpenTelemetry Protocol (OTLP) specification describes the encoding, transport, and delivery mechanism of telemetry data between telemetry sources, intermediate nodes such as collectors and telemetry backends.
-
-
+<img v-click="0" src='./imgs/open-telemetry-slides/ex4/ex.png' class='absolute top-30 left-45 w-150'>
 
 ---
 
-# OpenTelemetry Collector
+# Sampling
+https://opentelemetry.io/docs/concepts/sampling/
 
-
-<img v-click="0" class='absolute left-30 h-100 ' src='https://miro.medium.com/v2/resize:fit:1400/1*R9WOnbtcwJaKmh7lbtaNHQ.png'>
-
-<arrow v-click="1" x1="290" y1="120" x2="290" y2="160" color="#953" width="2" arrowSize="3" />
-<arrow v-click="2" x1="500" y1="120" x2="500" y2="285" color="#953" width="2" arrowSize="3" />
-<arrow v-click="3" x1="700" y1="120" x2="700" y2="160" color="#953" width="2" arrowSize="3" />
-
+<img v-click=[0] class='absolute top-40 left-45 w-150' src='./imgs/open-telemetry-slides/sampling/sampl-1.png' />
+<img v-click=1 class='absolute top-30 left-65 w-120' src='./imgs/open-telemetry-slides/sampling/sampling.png' />
 
 ---
 
-# System Example
-<!-- <img src='https://grafana.com/media/blog/lambda-traces/Lambda-traces-2.png'> -->
-<src src="https://miro.medium.com/v2/resize:fit:1400/1*Re85YC9ZNUCniuZEdAsH3A.png" />
+# Head Sampling 
+
+<img v-click=1 class='absolute top-40 left-45 w-150' src='./imgs/open-telemetry-slides/sampling/sampl-2.png' />
+<div v-click=2 class='absolute top-100 left-45 w-150' >
+
+-  Easy to understand
+-  Easy to configure
+- Efficient
+- Can be done at any point in the trace collection pipeline
+
+</div>
 
 
 ---
 
+# Tail Sampling
+
+<div v-click=[1] class='absolute top-60 left-35 w-180' >
+Tail Sampling gives you the option to sample your traces <span v-mark.yellow=1>based on specific criteria</span> derived <span v-mark.yellow=1>from different parts</span> of a trace, which isn’t an option with Head Sampling.
+</div>
+<img v-click=2 class='absolute top-40 left-45 w-150' src='./imgs/open-telemetry-slides/sampling/sampl-3.png' />
+
+<div v-click=[3] class='absolute top-100 left-45 w-150' >
+
+
+- Always sampling traces that contain an error
+- Sampling traces based on overall latency
+- Sampling more traces originating from a newly deployed service
+
+</div>
+<div v-click=4 class='absolute top-100 left-45 w-150' >
+But
+
+- Tail sampling can be difficult to implement. 
+- Tail sampling can be difficult to operate. 
+
+</div>
+---
+layout: center
+---
+
+# Demo
+
+---
+
+# Conclusion
+
+<div v-click=0 class='absolute top-50 left-35 w-150' >
+
+<v-clicks>
+
+- What is observability
+- The pillars of observability
+- Observability workflow
+</v-clicks>
+</div>
+
+---
