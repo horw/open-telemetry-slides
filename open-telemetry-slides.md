@@ -1,22 +1,40 @@
 ---
-title: Services Observability. 
+title: Services Observability.
 class: text-center
 drawings:
   persist: false
 transition: slide-left
 mdc: true
 ---
+
 # System Observability
 
 <div class='absolute bottom-2 right-3'>
 presented by Igor Udot
 </div>
 
+<!--
+Hello everyone!
+
+Today, I want to talk about systems observability.
+If we want to build a robust system that is easy to fix bugs in, it's very important to understand how the system works.
+-->
+
 ---
 
 # Monitoring vs Observability
 
 <img src="./imgs/open-telemetry-slides/blackwhitebox.png" class="absolute w-130 top-55 left-60"/>
+
+<!--
+I guess a lot of us have heard about monitoring, so let's compare monitoring and observability.
+
+When we talk about monitoring, we can imagine a black box. We stand outside and see what the system gives us - whether it is alive or already broken, whether it works normally or is overwhelmed. However, we are not allowed to look inside.
+
+On the other hand, we have observability, which helps us understand why the system works in a certain way. It changes our perspective to a white box, inside which we can observe almost every state of the system.
+
+As a result, we can say that observability gives us a full understanding of the system's behavior, while monitoring simply shows reactions.  There are two questions that help us better understand the main concept.
+-->
 
 ---
 layout: center
@@ -28,6 +46,9 @@ mdc: true
 
 What is monitoring
 
+<!--
+You can see this question starts with 'Is,' so it can only be answered in a binary way. Is or isn't.
+-->
 
 ---
 layout: center
@@ -38,6 +59,10 @@ mdc: true
 # "<span v-mark.yellow.circle=1>Why</span> is the system behaving this way?"
 
 What is observability
+
+<!--
+But when we see this question, which starts with 'why,' our answer will be more complex and thorough.θорэ/ˈθʌrə/. So we can see a complete difference here between these two questions.
+-->
 
 ---
 
@@ -57,6 +82,19 @@ Observability is something you
 either have, or you don’t.
 </span>
 
+<!--
+Let's go through the observability timeline.
+
+The definition of observability originates from mechanics and control theory in the 1960s. At that time, people began to think that if a system lacked observability, it would be difficult to understand why certain events occurred. They started trying to implement it in various ways.
+
+When we discuss the IT implementation of observability, it officially all began when Twitter established an observability team that outlined its mission.
+
+After a few years, Twitter provided a definition for The Four Pillars of Observability. Initially, it seemed excessive эксесив to have four pillars, so it was eventually reduced to three.
+
+Following this, there was a hype surrounding it, with every company attempting to implement their toolset for observability by 2018.
+
+In 2019, debates about observability as a service (SaaS) began, and in 2020, there was a redefinition. Observability can't be simply implemented as a SaaS; it's closely linked with various aspects of a product. As a result, observability is something you either have or you don't.
+-->
 
 ---
 
@@ -72,6 +110,10 @@ Metrics - Traces - Logs
   class="absolute w-100 left-70"
   src='./imgs/open-telemetry-slides/pillars.png'
 />
+
+<!--
+Here is where every journey of observability starts. We need to understand what metrics, traces, and logs are, how they are connected, and why they should be connected together.
+-->
 
 ---
 
@@ -94,6 +136,19 @@ Metrics are a numerical representation of data.
   src='https://last9.ghost.io/content/images/size/w1000/2023/05/image-28.png'>
 </div>
 
+<!--
+Metrics are not just numbers; they are a numerical representation of data. 
+Here are a few example categories of metrics:
+- Performance metrics
+- Resource utilization metrics
+- Error metrics
+
+There is an example of metrics:
+The metric name here is node_cpu_utilization_percent_threshold.
+The value is 99.9.
+Dimensions are labels that help give the metric some features.
+-->
+
 ---
 
 # Traces
@@ -106,6 +161,24 @@ Without tracing, finding the root cause of problems in a distributed system can 
 
 <img v-click=3 class="w-230 absolute right-5 top-50" src='./imgs/open-telemetry-slides/day-routine.png'>
 
+<!--
+Here, we need to pay more attention. 
+
+Traces are considered the most important part; for developers, everything starts from traces. Traces help us to connect metrics and logs together.
+
+Slide step 2
+
+Here is usually how it looks, but let's take a simpler example to help us better understand.
+
+We have received a pizza order. It is a trace.
+Taking the order is the first step (span).
+Cooking the pizza is the second step (span).
+Delivering it is the final step (span).
+
+Actually, spans can be overlapped and can occur in parallel.
+After understanding this example, we realize that we are actually quite inefficient in pizza ordering because each step takes too much time. We need to optimize it!
+-->
+
 ---
 
 # Logs
@@ -116,6 +189,48 @@ Logs are the historical records of your systems.
 {"level":"warning","msg":"You should probably take a look at this.","time":"2019-12-09T16:18:21+01:00"}
 {"level":"error","msg":"Something failed but I'm not quitting.","time":"2019-12-09T16:18:21+01:00"}
 ```
+
+<!--
+Logs are the historical records of your system.
+
+When we talk about typical systems, most of them have logs, fewer have tracing, and even fewer have metrics.
+
+After taking an overview of metrics, logs, and traces. We can apply this context to our pizza shop.
+
+-->
+
+---
+
+# Gangs of Four
+metrics, logs, trace and pizza
+<div v-click=1>
+In this context, metrics might include:
+
+- good_review
+- time to deliver
+</div>
+<div v-click=2>
+A trace represents the path of a single order.
+</div>
+<div v-click=3>
+For more detailed information, we can refer to the logs.
+</div>
+
+<!--
+Our Gangs of Four is already here:
+- metrics
+- logs
+- trace
+- pizza
+
+Good_review and time to deliver might be our metrics.
+
+A single order is a good example of a trace.
+
+If you still don't understand why your 5-star review isn't that much, go to the logs and take a detailed look for information.
+
+What does the typical workflow look like for a user of observability?
+-->
 
 ---
 layout: center
@@ -131,17 +246,37 @@ layout: center
   
   Logs: <span v-mark.yellow="1">provide</span> the detail which reveals the root cause of the problem
 
-  
+<!--
+First, we receive an alert or notification from our metrics.
+
+These alerts indicate that there is a problem.
+
+Next, traces identify the source of the problem.
+
+And logs provide the details that give us the root cause of the problem.
+
+At this point, you may have a question: 'Okay, I have a bunch of information, but how does it work? How is the information connected together?'
+-->
+
 ---
 layout: center
 class: text-center
 ---
+
 There should be <span v-mark.yellow=1>some way</span> to help us correlate metrics, traces, and logs.
 
 <div v-click=2> 
 
 # It is a trace ID.
 </div>
+
+<!--
+There should be a way to help us correlate metrics, traces, and logs.
+
+This is a trace ID.
+
+I believe we are now ready to take a look at a schematic example.
+-->
 
 ---
 class: text-center
@@ -204,10 +339,26 @@ Our alert system indicates that the exception count is equal to `1`.
 <img v-click=19 class="w-28 absolute top-55 left-82" src='./imgs/open-telemetry-slides/ex1/opentel.png' >
 <img v-click=19 class="w-28 absolute top-85 left-120" src='./imgs/open-telemetry-slides/ex1/opentel.png' >
 
+<!--
+WE HAVE A PROBLEM
 
+Our alert system indicates that the exception count is equal to 1.
+
+As users, we move forward by first checking the metrics. 
+
+We open our metrics service, look for the related metric, and note the trace ID.
+With this information in hand, we move on to the trace service. Using the trace ID, we access the tracing system and find helpful information.
+However, we are not satisfied yet. Therefore, we turn to the logs. Opening the logs service, we once again use our trace ID. 
+Now equipped with comprehensive information about our exception, we can move forward to fix error.
+
+In this example, we utilized various observability backends such as Prometheus, Jaeger, and Loki. These tools are interchangeable, and you can choose any of them based on your preference.
+
+One crucial aspect is that metrics, traces, and logs are interconnected. With a trace ID, we have the flexibility to navigate seamlessly between metrics, traces, and logs.
+
+How can we assign this trace ID, and who will help us? OpenTelemetry.
+-->
 
 ---
-
 
 # OpenTelemery
 https://opentelemetry.io/docs/what-is-opentelemetry/
@@ -215,6 +366,15 @@ https://opentelemetry.io/docs/what-is-opentelemetry/
 OpenTelemetry is an Observability framework and toolkit designed to <span v-mark.circle.green="1">create</span> and <span v-mark.circle.green="1">manage</span> telemetry data such as <span v-mark.circle.green="1"> traces, metrics, and logs</span>. Crucially, OpenTelemetry is vendor- and tool-agnostic, meaning that it can be used with a broad variety of Observability backends, including open source tools like Jaeger and Prometheus, as well as commercial offerings.
 
 OpenTelemetry<span v-mark.circle.red="2"> is not an observability backend</span> like Jaeger, Prometheus, or other commercial vendors. OpenTelemetry is focused on the generation, collection, management, and export of telemetry. A major goal of OpenTelemetry is that you can easily instrument your applications or systems, no matter their language, infrastructure, or runtime environment. Crucially, the<span v-mark.circle.red="2"> storage and visualization </span>of telemetry is intentionally left to other tools.
+
+<!--
+It's a framework that helps us create and manage telemetry data.
+
+It's not an observability backend like Jaeger or Prometheus; it doesn't store or visualize telemetry.
+
+How it works?
+-->
+
 ---
 
 # Simple workflow
@@ -319,6 +479,29 @@ FastAPIInstrumentor.instrument_app(app, tracer_provider=tracer)
 </div>
 </div>
 
+<!--
+Here we have two blocks:
+- Our System
+- Observability backend
+
+Exporters help us transfer data to data consumers/receivers.
+Ideally, it's supposed to use the OpenTelemetry protocol, abbreviated as OTLP, for communication.
+
+If we extend our system definition, it will contain a few more blocks inside:
+- Provider
+- Processor
+- Exporter
+
+I want to say that they, yes, compose our system. However, we also need to understand that this is only one of the tasks of our system. Our system is not solely about observability; it needs to perform its functions and then provide helpful information to the provider. Giving **helpful** information to the provider is essential for achieving observability.
+
+We can provide helpful information to the provider immediately after we instrument our system to collect and send OTLP data. 
+
+In this example, I used Python, and all these functions are from the OpenTelemetry library. As we can observe, we declare a provider, processor, and executor for tracing, as well as for metrics and logs.
+
+If you want to customize something, you can use trace context to add additional information. 
+
+Alternatively, if you don't, you can directly use box solutions.
+-->
 
 ---
 
@@ -328,11 +511,41 @@ FastAPIInstrumentor.instrument_app(app, tracer_provider=tracer)
 <img v-click="[2]" src='./imgs/open-telemetry-slides/ex3/collector.png' class='absolute top-42 left-73 w-106'>
 <img v-click="3" src='./imgs/open-telemetry-slides/ex3/sidecar.png' class='absolute top-42 left-25 w-200'>
 
+<!--
+Our system is growing. 
+It has now become a chain of blocks, with something new in the middle. 
+These are collectors.
+
+Collectors perform the same tasks: they receive, process, and export data. Therefore, we can add additional logic to them. 
+
+They serve as our gateway to access the observability backend.
+
+We can modify this architecture. Logically, nothing changes, but there are physical implications. Our server needs to send data, and the network is usually not our best friend due to high latency. Therefore, we can place our System and Collector as a Sidecar on one physical server. This way, our System doesn't need to worry as much about data transfer; let the Collector handle it.
+
+Workflows are not always as straightforward as in this example.
+-->
+
 ---
 
 # Complex workflow
 
 <img v-click="0" src='./imgs/open-telemetry-slides/ex4/ex.png' class='absolute top-30 left-45 w-150'>
+
+<!--
+Usually, we have many more elements.
+The Collector can also help us gather data from different sources.
+
+- The example at the top assumes that, as we already know from the previous slide, there is low network latency.
+- In the middle example, information can be aggregated first before being sent further.
+- The bottom example is a straightforward connection to our master collector. 
+
+Our master collector can send data to different observability backends.
+
+In these few slides, we have become familiar with the possible workflows.
+
+One more thing that needs to be mentioned is data.
+I have mentioned data transfer numerous times. Therefore, when we experience high loads, we also need to consider how we sample.
+-->
 
 ---
 
@@ -341,6 +554,19 @@ https://opentelemetry.io/docs/concepts/sampling/
 
 <img v-click=[0] class='absolute top-40 left-45 w-150' src='./imgs/open-telemetry-slides/sampling/sampl-1.png' />
 <img v-click=1 class='absolute top-30 left-65 w-120' src='./imgs/open-telemetry-slides/sampling/sampling.png' />
+
+<!--
+Here are our collectors and data flow, represented as a trace. 
+
+Do you really need all of this data? 
+The biggest green circle represents successful traces, 
+the red circle indicates where errors occurred, 
+and the yellow circle shows warnings.
+ 
+Perhaps we are only interested in specific traces. For some useless traces, we want to filter them and focus on only a small portion. 
+
+Sampling helps us achieve this.
+-->
 
 ---
 
@@ -356,6 +582,12 @@ https://opentelemetry.io/docs/concepts/sampling/
 
 </div>
 
+<!--
+There are two ways to do sampling:
+- Head Sampling and Tail
+
+Head sampling is quite simple; you just sample(choose) trace flow from the head. However, you may not always know whether a trace is good or bad. It's just a random.
+-->
 
 ---
 
@@ -381,6 +613,23 @@ But
 - Tail sampling can be difficult to operate. 
 
 </div>
+
+<!--
+Tail sampling is much harder. 
+
+It gives you the option to sample your traces based on specific criteria derived from different parts of a trace, which isn't an option with Head Sampling.
+
+In tail sampling, sampling occurs from the end after full information has been gathered, and only then do we consider whether to sample it or not.
+
+For example, we can sample traces based on the following criteria:
+
+- Traces with errors
+- Traces with overall latency
+- Traces from newly deployed services
+
+But tail sampling can be difficult to implement and operate
+-->
+
 ---
 layout: center
 ---
@@ -401,4 +650,10 @@ layout: center
 </v-clicks>
 </div>
 
----
+<!--
+We have reviewed what observability is, 
+
+seen its three pillars,
+
+and understood observability workflows.
+-->
