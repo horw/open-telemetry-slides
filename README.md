@@ -1,1 +1,1 @@
-Here I will try to share my notes.
+The presentation about observability in context of open-telemetry.
